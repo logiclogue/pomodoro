@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [[ $1 -gt 0 ]]; then
+    minutes=$1
+else
+    minutes=25
+fi
+
+start_date=$( date +%F:%H-%M-%S )
+seconds=$(( minutes * 60 ))
+seconds_after_notification=30
+seconds_before_notification=$(( seconds - seconds_after_notification ))
+
+function output_log () {
+    echo "$start_date":$SECONDS
+}
+
+function when_ctrl_c () {
+    output_log
+
+    exit 2
+}
+
+trap "when_ctrl_c" 2
+
+sleep $seconds_before_notification
+notify-send "30 seconds left"
+sleep $seconds_after_notification
+output_log
